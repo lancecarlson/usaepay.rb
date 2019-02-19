@@ -8,14 +8,17 @@ module USAePay
   class Client
     extend Forwardable
     def_delegator :@savon, :call
-    def initialize(wsdl, opts={})
+    def initialize(wsdl, opts = {})
       @wsdl = wsdl
-      @source_key = opts[:source_key] || raise('Missing source_key')
-      @pin = opts[:pin]
-      @savon = Savon.client(wsdl: @wsdl) do
+      @source_key = opts.delete(:source_key) { |key| "#{key} required"}
+      @pin = opts.delete(:pin)
+      savon_opts = {wsdl: @wsdl}.merge(opts)
+
+      @savon = Savon.client(savon_opts) do
         convert_request_keys_to :camelcase
         namespace_identifier :ns1
       end
+
       yield self if block_given?
     end
 
