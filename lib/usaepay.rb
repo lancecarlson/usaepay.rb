@@ -10,8 +10,9 @@ module USAePay
     def_delegator :@savon, :call
     def initialize(wsdl, opts = {})
       @wsdl = wsdl
-      @source_key = opts.delete(:source_key) { |key| "#{key} required"}
+      @source_key = opts.delete(:source_key) { |key| raise ArgumentError, "#{key} required" }
       @pin = opts.delete(:pin)
+      @client_ip = opts.delete(:client_ip) { "127.0.0.1" }
       savon_opts = {wsdl: @wsdl}.merge(opts)
 
       @savon = Savon.client(savon_opts) do
@@ -38,7 +39,7 @@ module USAePay
           :seed => seed,
           :hash_value => sha1
         },
-        :client_ip => "127.0.0.1"
+        :client_ip => @client_ip
       }
     end
   end

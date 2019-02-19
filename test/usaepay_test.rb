@@ -11,6 +11,22 @@ class UsaepayTest < Minitest::Test
     refute_nil ::Usaepay::VERSION
   end
 
+  def test_source_key_required
+    assert_raises ArgumentError do
+      USAePay::Client.new @wsdl, {}
+    end
+  end
+
+  def test_client_options
+    c = USAePay::Client.new @wsdl, {
+      :source_key => @source_key,
+      :pin => @pin,
+      :client_ip => '10.10.10.10'
+    }
+
+    assert_equal '10.10.10.10', c.token.fetch(:client_ip)
+  end
+
   def test_run_a_test_report
     USAePay::Client.new @wsdl, {
         :source_key => @source_key,
