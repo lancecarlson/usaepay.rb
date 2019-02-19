@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    usaepay (0.0.2)
+    usaepay (0.0.3)
       savon (~> 2.12)
 
 GEM
